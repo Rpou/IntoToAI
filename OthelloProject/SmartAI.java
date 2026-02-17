@@ -19,7 +19,7 @@ public class SmartAI  implements IOthelloAI{
     }
 
     public boolean isCutoff(GameState s, int depth){
-        return depth > 7;
+        return depth > 6;
     }
 
     public EvalMove MaxValue(GameState s, int depth, int alpha, int beta){
