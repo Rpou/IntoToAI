@@ -50,7 +50,7 @@ public class SmartAI  implements IOthelloAI{
 
     public EvalMove MinValue(GameState s, int depth, int alpha, int beta){
         ArrayList<Position> moves = s.legalMoves();
-        if(s.isFinished()){
+        if(isCutoff(s, depth) || s.isFinished()){
             return new EvalMove(evaluatePos(s), null);
         }
         int bestEval = Integer.MAX_VALUE;
