@@ -49,7 +49,7 @@ public class SmartAI  implements IOthelloAI{
                     bestMove = pos;
                     alpha = Math.max(alpha, ev.value);
                 }
-                if(bestEval >= beta) return new EvalMove(bestEval, bestMove);
+                if(bestEval >= beta) return new EvalMove(bestEval, bestMove);  // makes beta cut
             }
         }
         return new EvalMove(bestEval, bestMove);
@@ -60,7 +60,7 @@ public class SmartAI  implements IOthelloAI{
         if(isCutoff(s, depth) || s.isFinished()){ // see if we should stop going further down.
             return new EvalMove(evaluatePos(s), null);
         }
-        
+
         int bestEval = Integer.MAX_VALUE; // placeholder bestEval
         Position bestMove = new Position(-1,-1); // placeholder move
 
@@ -77,7 +77,7 @@ public class SmartAI  implements IOthelloAI{
                     beta = Math.min(beta, ev.value);
                 }
             }
-            if (bestEval <= alpha) return new EvalMove(bestEval, bestMove);
+            if (bestEval <= alpha) return new EvalMove(bestEval, bestMove); // makes alpha cut
         }
         return new EvalMove(bestEval, bestMove);
     }
