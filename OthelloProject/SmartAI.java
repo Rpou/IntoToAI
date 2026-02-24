@@ -60,9 +60,11 @@ public class SmartAI  implements IOthelloAI{
         if(isCutoff(s, depth) || s.isFinished()){ // see if we should stop going further down.
             return new EvalMove(evaluatePos(s), null);
         }
+        
         int bestEval = Integer.MAX_VALUE; // placeholder bestEval
         Position bestMove = new Position(-1,-1); // placeholder move
 
+        // look through all moves, and see which returns the highest utility.
         for(int i = 0; i < moves.size(); i++){
             GameState gameSim = new GameState(s.getBoard(), s.getPlayerInTurn());
             var pos = moves.get(i);
