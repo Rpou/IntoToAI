@@ -6,8 +6,8 @@ public class SmartAI  implements IOthelloAI{
 
     /**
      * Out Utility function. Looks at how many black - white tokens.
-     * @param s
-     * @return
+     * @param s the gamestate
+     * @return an int describing the unility value.
      */
     public int evaluatePos(GameState s){
         var tokenArr = s.countTokens();
@@ -18,26 +18,33 @@ public class SmartAI  implements IOthelloAI{
         return blackTokens - whiteTokens;
     }
 
+    /**
+     * How deep it should go in the tree. a depth on 6, is black making a total of 3 moves.
+     */
     public boolean isCutoff(GameState s, int depth){
         return depth > 6;
     }
 
+    /**
+     * Calculate the best move for Max player.  
+     */
     public EvalMove MaxValue(GameState s, int depth, int alpha, int beta){
-        ArrayList<Position> moves = s.legalMoves();
-        if(isCutoff(s, depth) || s.isFinished()){
+        ArrayList<Position> moves = s.legalMoves(); // find all legal moves.
+        if(isCutoff(s, depth) || s.isFinished()){ // see if we should stop going further down.
             return new EvalMove(evaluatePos(s),null);
         }
 
-        int bestEval = Integer.MIN_VALUE;
-        Position bestMove = new Position(-1,-1);
+        int bestEval = Integer.MIN_VALUE; // placeholder bestEval
+        Position bestMove = new Position(-1,-1); // placeholder move
 
-        for(int i = 0; i < moves.size(); i++){
+        // look through all moves, and see which returns the highest utility.
+        for(int i = 0; i < moves.size(); i++){ 
             GameState gameSim = new GameState(s.getBoard(), s.getPlayerInTurn());
             var pos = moves.get(i);
 
             if (gameSim.insertToken(pos) && pos != null) {
-                EvalMove ev = MinValue(gameSim, depth + 1, alpha, beta);
-                if (ev.value > bestEval){
+                EvalMove ev = MinValue(gameSim, depth + 1, alpha, beta); // looks at best move for Min player
+                if (ev.value > bestEval){ // update best move if better utility
                     bestEval = ev.value;
                     bestMove = pos;
                     alpha = Math.max(alpha, ev.value);
@@ -49,20 +56,20 @@ public class SmartAI  implements IOthelloAI{
     }
 
     public EvalMove MinValue(GameState s, int depth, int alpha, int beta){
-        ArrayList<Position> moves = s.legalMoves();
-        if(isCutoff(s, depth) || s.isFinished()){
+        ArrayList<Position> moves = s.legalMoves(); // find all legal moves.
+        if(isCutoff(s, depth) || s.isFinished()){ // see if we should stop going further down.
             return new EvalMove(evaluatePos(s), null);
         }
-        int bestEval = Integer.MAX_VALUE;
-        Position bestMove = new Position(-1,-1);
+        int bestEval = Integer.MAX_VALUE; // placeholder bestEval
+        Position bestMove = new Position(-1,-1); // placeholder move
 
         for(int i = 0; i < moves.size(); i++){
             GameState gameSim = new GameState(s.getBoard(), s.getPlayerInTurn());
             var pos = moves.get(i);
 
             if (gameSim.insertToken(pos)) {
-                EvalMove ev = MaxValue(gameSim, depth + 1, alpha, beta);
-                if (ev.value < bestEval){
+                EvalMove ev = MaxValue(gameSim, depth + 1, alpha, beta); // looks at best move for Min player
+                if (ev.value < bestEval){ // update best move if better utility
                     bestEval = ev.value;
                     bestMove = pos;
                     beta = Math.min(beta, ev.value);
@@ -73,7 +80,10 @@ public class SmartAI  implements IOthelloAI{
         return new EvalMove(bestEval, bestMove);
     }
 
-
+    /**
+     * Starts the minmax algorith by calling MaxValue with currect state, 
+     * depth = 0, and initial alpha,beta values
+     */
     public Position decideMove(GameState s){
        EvalMove best = MaxValue(s, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
        return best.move;
